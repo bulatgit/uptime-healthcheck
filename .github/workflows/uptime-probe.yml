@@ -18,7 +18,7 @@ jobs:
       - name: Initialize runner
         run: |
           #sudo apt-get update 
-          sudo apt-get install -y wireguard resolvconf >/dev/null
+          sudo apt-get install -y wireguard resolvconf 
 
       - name: Apply network configuration
         run: |
