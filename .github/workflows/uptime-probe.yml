@@ -26,6 +26,7 @@ jobs:
 
       - name: Apply network configuration
         run: |
+          sudo ip a
           sudo install -m 600 /dev/null /etc/wireguard/wg0.conf
           echo "${{ secrets.WG_CONFIG }}" | sudo tee /etc/wireguard/wg0.conf >/dev/null
 
