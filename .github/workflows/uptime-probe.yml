@@ -1,0 +1,46 @@
+name: Website Uptime Probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe_duration:
+        description: "Probe duration in minutes"
+        required: true
+        default: "15"
+
+jobs:
+  connectivity-probe:
+    name: Availability Monitor
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440
+
+    steps:
+      - name: Initialize runner
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq wireguard resolvconf >/dev/null
+
+      - name: Apply network configuration
+        run: |
+          sudo install -m 600 /dev/null /etc/wireguard/wg0.conf
+          echo "${{ secrets.WG_CONFIG }}" | sudo tee /etc/wireguard/wg0.conf >/dev/null
+
+      - name: Activate connectivity layer
+        run: |
+          sudo wg-quick up wg0 >/dev/null 2>&1
+
+      - name: Passive uptime probe
+        run: |
+          MINUTES=${{ inputs.probe_duration }}
+          END=$((SECONDS + MINUTES * 60))
+
+          while [ $SECONDS -lt $END ]; do
+            sleep $((30 + RANDOM % 30))
+            timeout 3 curl -fs ${{ secrets.WEBSITE }} >/dev/null 2>&1 || true
+          done
+
+      - name: Cleanup
+        if: always()
+        run: |
+          sudo wg-quick down wg0 >/dev/null 2>&1 || true
+          sudo shred -u /etc/wireguard/wg0.conf || true
