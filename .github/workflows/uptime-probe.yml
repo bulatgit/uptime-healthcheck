@@ -8,6 +8,10 @@ on:
         required: true
         default: "15"
 
+concurrency:
+  group: uptime-probe
+  cancel-in-progress: true
+
 jobs:
   connectivity-probe:
     name: Availability Monitor
