@@ -8,7 +8,7 @@ on:
         required: true
         default: "15"
   schedule:
-    - cron: "45 9 * * *"   # every day at 07:00 UTC
+    - cron: "51 9 * * *"   # every day at 07:00 UTC
 
 
 concurrency:
