@@ -8,7 +8,7 @@ on:
         required: true
         default: "15"
   schedule:
-    - cron:  "0 7 * * *"   # every day at 07:00 UTC
+    - cron:  "0 7-23 * * *"   # every day at 07:00 UTC
 
 
 concurrency:
@@ -39,7 +39,7 @@ jobs:
 
       - name: Passive uptime probe
         run: |
-          MINUTES=${{ inputs.probe_duration  || 960 }}
+          MINUTES=${{ inputs.probe_duration  || 60 }}
           END=$((SECONDS + MINUTES * 60))
 
           while [ $SECONDS -lt $END ]; do
